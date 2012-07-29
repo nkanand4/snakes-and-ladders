@@ -1,0 +1,168 @@
+<html>
+<head>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+<style type="text/css">
+table {
+	position: relative;
+}
+td {
+	border: 1px solid #FFFF00;
+    height: 74px;
+    margin: 0;
+    padding: 0;
+    width: 72px;
+}
+</style>
+<script type="text/javascript">
+(function(){
+	var snakes, ladders, dice,
+	cell = -1,
+	piece = '<svg style="position: absolute; top:666px; left: -10px;" version="1.1" xmlns="http://www.w3.org/2000/svg"> \
+				<circle fill="green" stroke-width="2" stroke="black" r="27" cy="37" cx="35"/> \
+			</svg>',
+	tr ='<tr class= "classname"> \
+				<td></td> \
+				<td></td> \
+				<td></td> \
+				<td></td> \
+				<td></td> \
+				<td></td> \
+				<td></td> \
+				<td></td> \
+				<td></td> \
+				<td></td> \
+			</tr>',
+	createSnakes = function() {
+		snakes = {
+		    98: 28,
+		    95: 24,
+		    92: 51,
+		    83: 19,
+		    73: 1,
+		    69: 33,
+		    64: 36,
+		    59: 17,
+		    55: 7,
+		    52: 11,
+		    48: 9,
+		    46: 5,
+		    44: 19
+		};
+		console.info('Snakes created', snakes);
+	},
+	createLadders = function() {
+		ladders = {
+		    8: 26,
+		    21: 82,
+		    43: 77,
+		    50: 91,
+		    54: 93,
+		    62: 96,
+		    66: 87,
+		    80: 100
+		};
+		console.info('Ladders created', ladders);
+	},
+	createBoard = function() {
+		for(var string=0,n=0; n<10;n++) {
+			string += tr.replace(/classname/g, n % 2 === 0 ? 'odd' : 'even');
+		}
+		$('tbody').append(string);
+
+		var diff = -1;
+		var n = 100;
+		$('tr').each(function() {
+			var tmp;
+			diff = -diff;
+			$(this).find('td').each(function(i) {
+				tmp = n - (diff * i);
+				$(this).attr('id', 'cell-'+tmp);
+			});
+			n = tmp - 10;
+		});
+		console.info('Board constructed. ', $('tbody'));
+	}
+	rollDice = function() {
+		dice = Math.ceil(Math.random() * 6, 10);
+		console.info('Dice rolled to ', dice);
+		movemyPiece();
+	},
+	movemyPiece = function() {
+		var delay = 0;
+		if(cell === -1) {
+			//its not entered arena yet;
+			//if its 6, move it into arena
+			if(dice === 6){
+				console.info('Welcome and Good luck!!!');
+				cell = 0;
+				console.info('You get a free rolling.');
+				rollDice();
+			} else {
+				console.info('Could not make it. Keep trying.');
+			}
+		} else {
+			//its entered the arena
+			cell += dice;
+			console.info('Piece moving to ', cell);
+			if(typeof snakes[cell] !== 'undefined') {
+				showPiece();
+				cell = snakes[cell];
+				console.info('Ouch! Bitten by snake. Moving to ', cell);
+				delay = 1300;
+			}else if(typeof ladders[cell] !== 'undefined') {
+				showPiece();
+				cell = ladders[cell];
+				console.info('Kudos! Got a ladder. Moving to ', cell);
+				delay = 1300;
+			}
+		}
+		showPiece();
+	},
+	showPiece = function() {
+		var top, left, target;
+		if(cell > 0){
+			console.log('The piece is being placed at ', cell);
+			target = $('#cell-'+cell);
+			top = target.position().top;
+			left = target.position().left;
+			$(piece).animate({
+				top: top,
+				left: left
+			}, 'slow', function() {
+				piece = $(piece).appendTo(target);
+			});
+		}
+	};
+
+	window.game = {
+		rollDice: function() {
+			rollDice();
+		}
+	};
+
+	$(function() {
+		createBoard();
+		createSnakes();
+		createLadders();
+		$('button').click(function() {
+			console.info('Rolling dice');
+			game.rollDice();
+		});
+	});
+}(jQuery));
+</script>
+</head>
+<body>
+	<div style="position: relative;">
+		<div style="position: absolute; width: 800px; overflow: hidden; top:0;left:0;">
+			<img src="sl.png" style="position: absolute; -moz-transform: rotate(0.5deg); top: -1px; left: -4px;">
+			<table cellspacing="0" cellpadding="0">
+				<tbody></tbody>
+			</table>
+		</div>
+	</div>
+	<div style="left: 750px; text-align: center; position: fixed; width: 100px; bottom: 200px;">
+		<button>Roll</button>
+	</div>
+</body>
+</html>
