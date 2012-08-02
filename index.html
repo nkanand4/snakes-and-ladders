@@ -7,6 +7,13 @@
 <script type="text/javascript" src="../socket.io/socket.io.js"></script>
 <script type="text/javascript" src="js/communication.js"></script>
 <style type="text/css">
+#main-img {
+	position: absolute;
+	-moz-transform: rotate(0.5deg);
+	-webkit-transform: rotate(0.5deg);
+	top: -1px;
+	left: -4px;
+}
 table {
 	position: relative;
 }
@@ -98,7 +105,7 @@ td {
 <body>
 	<div style="position: relative;">
 		<div id="board" style="position: absolute; width: 800px; height: 810px; overflow: hidden; top:0;left:0;">
-			<img src="media/img/sl.gif" style="position: absolute; -moz-transform: rotate(0.5deg); top: -1px; left: -4px;">
+			<img id="main-img" src="media/img/sl.gif">
 			<table cellspacing="0" cellpadding="0">
 				<tbody></tbody>
 			</table>

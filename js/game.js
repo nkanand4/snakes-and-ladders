@@ -10,9 +10,10 @@ function Game() {
 	this.viewers = [];
 	this.channel = channel = nka.snl.game.communication;
 
+	//TODO: move this to utility
 	var generateRandomColor = function() {
 		return '#'+(
-				parseInt(Math.random()*16).toString(16) + 
+				parseInt(Math.random()*8).toString(16) + 
 				parseInt(Math.random()*16).toString(16) +
 				parseInt(Math.random()*16).toString(16)
 		);
@@ -72,6 +73,7 @@ function Game() {
 							session_id: session_id,
 							coin: '<svg id="user-'+session_id+'" style="width: 70px;" version="1.1" xmlns="http://www.w3.org/2000/svg">\
 									<circle fill="'+color+'" stroke-width="2" stroke="black" r="27" cy="37" cx="35"/>\
+									<text fill="#fff" class="username" x="22" y="42">'+(isMe ? 'You' : '')+'</text>\
 									</svg>'
 						}
 					}
