@@ -7,32 +7,37 @@ $(document).ready(function() {
 		socket.on('nick', function(info) {
 			console.info('You are ', info);
 			console.warn(match);
-			match.me = info.nick;
+			match.addUsers([info.nick], true);
 		});
 
 		socket.on('users', function(data){
 			console.log(data.users, ' in the room.');
-			if(!match.started) {
-				$(data.users).each(function(i, session_id) {
-					match.addUsers(session_id);
-				});
-			}
+			match.addOthers(data.users);
 		});
 
-		ns.communicate = function(info) {
-			info = info || {msg: {action: 'maa', camera: 'lights'}};
+		ns.communicate = function(act, args) {
+			console.log('Channel received %s' + (args ? ' with %o' : ''), act, args);
+			var info = {
+				msg: {
+					action: act,
+					args: args
+				}
+			};
 			socket.emit('chat', info);
 		}
 
+		
+
+
 		socket.on('chat', function(data) {
-			var action = data.msg;
-			switch(action) {
-				case 'color':
-					break;
-				case 'movement':
-					break;
-				default:
-					break;
+			var action = data.msg ? data.msg.action : '',
+				args = data.msg ? data.msg.args : [];
+			console.info('Recieved %s action', action, data);
+			try {
+				match[action](args);
+			} catch(e) {
+				console.info('Encountered error with %s & %o', action, args);
+				console.error(e);
 			}
-		})
+		});
 });
